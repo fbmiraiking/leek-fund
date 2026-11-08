@@ -27,6 +27,7 @@ import { events, formatDate, isStockTime } from './shared/utils';
 import { ProfitStatusBar } from './statusbar/Profit';
 import { StatusBar } from './statusbar/statusBar';
 import { cacheStocksRemindData } from './webview/leekCenterView';
+import flashNewsPanel from './webview/flashNewsPanel';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
 import { startProxyServer } from './webview/proxyService/proxyService';
@@ -69,6 +70,11 @@ export async function activate(context: ExtensionContext) {
     print: () => {},
     destroy: () => {}
   } as any);
+
+  // 常驻快讯面板：尽早打开，不依赖后面的本地代理/东财服务启动
+  if (workspace.getConfiguration('leek-fund').get<boolean>('flashNewsPanel.autoOpen', true)) {
+    setTimeout(() => flashNewsPanel.show(), 800);
+  }
 
   const fundService = new FundService(context);
   const stockService = new StockService(context);
@@ -204,6 +210,10 @@ export async function activate(context: ExtensionContext) {
     binanceProvider.refresh();
     forexProvider.refresh();
     flashNewsOutputServer?.reload();
+    // 填入选股宝 Token 后立即重启快讯源，避免等待轮询退避
+    if (e.affectsConfiguration('leek-fund.xgbToken')) {
+      FlashNewsDaemon.ReloadAll();
+    }
     events.emit('onDidChangeConfiguration');
     profitBar?.reload();
   });

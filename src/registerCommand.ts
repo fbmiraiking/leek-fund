@@ -43,6 +43,7 @@ import fundPosition from './webview/fundPosition';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
 import leekCenterView from './webview/leekCenterView';
+import flashNewsPanel from './webview/flashNewsPanel';
 import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import setStockPrice from './webview/setStockPrice';
@@ -88,6 +89,24 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leek-fund.flash-news-show', () => {
       flashNewsOutputServer.showOutput();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.openFlashNewsPanel', () => {
+      flashNewsPanel.show();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.openLeekNews', async () => {
+      try {
+        // 先聚焦 LeekFund 活动栏容器，再聚焦新闻视图
+        await commands.executeCommand('workbench.view.extension.leekFundMenu');
+        await commands.executeCommand('leekFundView.news.focus');
+      } catch (err) {
+        console.error('打开韭菜新闻失败：', err);
+      }
     })
   );
 

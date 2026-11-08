@@ -7,6 +7,7 @@ type AiConfig = {
   baseUrl: string;
   model: string;
   aiStockHistoryRange: string;
+  xgbToken: string;
 };
 
 export class AiConfigView {
@@ -30,20 +31,23 @@ export class AiConfigView {
       model: '',
     });
     const aiStockHistoryRange = config.get('leek-fund.aiStockHistoryRange', '3m');
-    
+    const xgbToken = config.get('leek-fund.xgbToken', '');
+
     return {
       ...aiConfig,
       aiStockHistoryRange,
+      xgbToken,
     };
   }
 
   private updateAiConfig(aiConfig: AiConfig) {
     const config = workspace.getConfiguration();
-    const { aiStockHistoryRange, ...restConfig } = aiConfig;
-    
+    const { aiStockHistoryRange, xgbToken, ...restConfig } = aiConfig;
+
     Promise.all([
       config.update('leek-fund.aiConfig', restConfig, true),
       config.update('leek-fund.aiStockHistoryRange', aiStockHistoryRange, true),
+      config.update('leek-fund.xgbToken', xgbToken || '', true),
     ]).then(
       () => {
         window.showInformationMessage('AI 配置已更新');

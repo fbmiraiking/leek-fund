@@ -40,7 +40,8 @@
     "onView:leekFundView.binance",
     "onView:leekFundView.forex",
     "onView:leekFundView.settings",
-    "onCommand:leek-fund.toggleStatusBarIconVisibility"
+    "onCommand:leek-fund.toggleStatusBarIconVisibility",
+    "onCommand:leek-fund.openFlashNewsPanel"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -65,7 +66,7 @@
         },
         {
           "id": "leekFundView.news",
-          "name": "XueQiu News"
+          "name": "韭菜新闻"
         },
         {
           "id": "leekFundView.binance",
@@ -85,6 +86,11 @@
       ]
     },
     "commands": [
+      {
+        "command": "leek-fund.openFlashNewsPanel",
+        "title": "打开实时快讯面板",
+        "icon": "$(broadcast)"
+      },
       {
         "command": "leek-fund.openAiConfig",
         "title": "Leek: 打开 AI 配置管理",
@@ -755,6 +761,23 @@
           "default": false,
           "description": "开启快讯输出（查看 - 输出 - 韭菜盒子快讯）"
         },
+        "leek-fund.flashNewsPanel.autoOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "VS Code 启动时自动打开实时快讯面板（金十快讯）"
+        },
+        "leek-fund.flashNewsPanel.maxItems": {
+          "type": "number",
+          "default": 300,
+          "minimum": 20,
+          "maximum": 2000,
+          "description": "实时快讯面板最多保留的消息条数"
+        },
+        "leek-fund.xgbToken": {
+          "type": "string",
+          "default": "",
+          "description": "选股宝登录 Token（可选）。在浏览器打开 xuangubao.cn，开发者工具 → Application → Local Storage 里复制 XGB_PC_PROD_TOKEN 的值"
+        },
         "leek-fund.expandAStock": {
           "type": "boolean",
           "default": true,
@@ -837,7 +860,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "\n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/LeekHub/leek-fund)"
+        "contents": "\n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [🎨个性定制](command:leek-fund.customSetting)\n [📰 韭菜新闻（侧边栏）](command:leek-fund.openLeekNews)\n [⚡ 实时快讯面板](command:leek-fund.openFlashNewsPanel)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/LeekHub/leek-fund)"
       }
     ]
   },

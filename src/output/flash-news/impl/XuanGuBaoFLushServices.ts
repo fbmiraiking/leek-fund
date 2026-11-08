@@ -1,6 +1,7 @@
 import FlashNewsDaemon from '../FlashNewsDaemon';
 import NewsFlushServiceAbstractClass from '../NewsFlushServiceAbstractClass';
 import axios from 'axios';
+import { workspace } from 'vscode';
 import { formatDateTime } from '../../../shared/utils';
 
 type XuanGuBaoMessage = {
@@ -29,7 +30,18 @@ export default class XuanGuBaoFlushService extends NewsFlushServiceAbstractClass
     if (this.isStop) return;
     let nextDelay = 10000;
     try {
+      const token = workspace.getConfiguration('leek-fund').get<string>('xgbToken', '') || '';
+      const headers: Record<string, string> = {
+        'User-Agent': 'Mozilla/5.0',
+        Referer: 'https://xuangubao.cn/',
+        'X-Appgo-Platform': 'device=pc',
+      };
+      // 选股宝网页端已改成登录态接口，需要浏览器里的 XGB_PC_PROD_TOKEN
+      if (token) {
+        headers['X-Ivanka-Token'] = token;
+      }
       const res = await axios.get(NEWS_FLASH_URL, {
+        headers,
         params: {
           limit: 40,
           subj_ids: this.subjectIds.join(','),
@@ -60,6 +72,9 @@ export default class XuanGuBaoFlushService extends NewsFlushServiceAbstractClass
 
           this.lastestId = _lastestId;
         }
+      } else {
+        // 没配置 token 时接口会返回「非法的token」，降低轮询频率，避免空转
+        nextDelay = 300000;
       }
     } catch (err) {
       console.error(err);

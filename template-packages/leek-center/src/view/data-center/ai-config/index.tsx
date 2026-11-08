@@ -19,6 +19,7 @@ const AIConfig: React.FC = () => {
           baseUrl: msg.data.baseUrl || '',
           model: msg.data.model || '',
           aiStockHistoryRange: msg.data.aiStockHistoryRange || '3m',
+          xgbToken: msg.data.xgbToken || '',
         });
       }
       if (msg.command === 'saveSuccess') {
@@ -52,8 +53,7 @@ const AIConfig: React.FC = () => {
           <Form.Item
             label="API Key"
             name="apiKey"
-            rules={[{ required: true, message: '请输入 API Key' }]}
-            extra="示例：sk-xxx 或其他厂商密钥"
+            extra="不填写则不会启用 AI 翻译（外文快讯将不显示）"
           >
             <Input.Password placeholder="请输入 API Key" />
           </Form.Item>
@@ -61,7 +61,6 @@ const AIConfig: React.FC = () => {
           <Form.Item
             label="Base URL"
             name="baseUrl"
-            rules={[{ required: true, message: '请输入 Base URL' }]}
           >
             <Input placeholder="例如：https://api.openai.com/v1 或自建网关地址" />
           </Form.Item>
@@ -69,9 +68,16 @@ const AIConfig: React.FC = () => {
           <Form.Item
             label="模型"
             name="model"
-            rules={[{ required: true, message: '请输入模型名称' }]}
           >
             <Input placeholder="例如：gpt-4o-mini 或 deepseek-chat 等" />
+          </Form.Item>
+
+          <Form.Item
+            label="选股宝 Token（可选）"
+            name="xgbToken"
+            extra="用于实时快讯的选股宝标签。浏览器打开 xuangubao.cn → F12 → Application → Local Storage → 复制 XGB_PC_PROD_TOKEN 的值；留空则选股宝快讯不启用"
+          >
+            <Input.Password placeholder="留空则选股宝快讯不启用" />
           </Form.Item>
 
           <Form.Item
